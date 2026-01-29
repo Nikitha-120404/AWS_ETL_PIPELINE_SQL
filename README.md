@@ -1,191 +1,162 @@
-🌦️ AWS Weather ETL Pipeline (SQL + PySpark)
-📌 Project Overview
+# 🌦️ AWS Weather ETL Pipeline (SQL + PySpark)
 
-This project implements an end-to-end ETL (Extract, Transform, Load) pipeline on AWS using real-time weather data.
-The pipeline automatically collects weather data from an external API, stores it in a MySQL database, applies transformations using AWS Glue (SQL and PySpark), and saves the cleaned data for analytics.
+## 📌 Project Overview
+This project demonstrates a **complete end-to-end ETL (Extract, Transform, Load) pipeline on AWS** using real-time weather data.
 
-This project demonstrates real-world data engineering skills including automation, cloud databases, and distributed data processing.
+The pipeline automatically extracts live weather data from an external API, stores it in **Amazon RDS (MySQL)**, transforms the data using **AWS Glue (SQL + PySpark)**, and outputs the cleaned and enriched data into **Amazon S3** and MySQL for analytics.
 
-🎯 Project Goal
+This project reflects **real-world data engineering practices**, including automation, cloud orchestration, and scalable data processing.
 
-To build an automated and scalable cloud ETL pipeline that:
+---
 
-Ingests live API data
+## 🎯 Project Objective
+To build a **fully automated cloud ETL pipeline** that:
+- Ingests live API data using serverless services
+- Cleans and enriches raw data
+- Applies business logic using SQL and PySpark
+- Stores analytics-ready data
+- Uses AWS services end to end
 
-Cleans and enriches the data
+---
 
-Stores analytics-ready output
+## 🏗️ Architecture Overview
 
-Uses AWS managed services end to end
+### ETL Workflow
+1. **AWS Lambda**
+   - Fetches live weather data from the OpenWeather API
+   - Triggered automatically every hour using Amazon CloudWatch
+   - Inserts raw weather data into Amazon RDS (MySQL)
 
-🏗️ Architecture Overview
+2. **Amazon RDS (MySQL)**
+   - Stores raw weather data (`usa_weather`)
+   - Stores transformed weather data (`usa_weather_transformed`)
 
-Pipeline Flow:
+3. **AWS Glue**
+   - Reads data from MySQL
+   - Applies transformations using:
+     - SQL (casting, filtering, categorization)
+     - PySpark (business logic using Spark)
+   - Writes transformed data back to MySQL and S3
 
-AWS Lambda
+4. **Amazon S3**
+   - Stores transformed weather data in Parquet format
+   - Enables analytics and reporting use cases
 
-Fetches live weather data from the OpenWeather API
+---
 
-Triggered automatically every hour using CloudWatch
+## 🧠 Key Concepts
 
-Inserts raw data into AWS RDS (MySQL)
+- Serverless data ingestion using **AWS Lambda**
+- ETL orchestration with **AWS Glue (SQL + PySpark)**
+- Relational data storage using **Amazon RDS (MySQL)**
+- Data lake storage using **Amazon S3**
+- Job monitoring and logging using **Amazon CloudWatch**
+- Secure access using **IAM Roles & Policies**
 
-AWS RDS (MySQL)
+---
 
-Stores structured raw weather data
+## 🧩 Tech Stack
 
-Acts as the source for transformations
+| Category | Tools & Services |
+|--------|------------------|
+| **Languages** | Python, SQL |
+| **AWS Services** | Lambda, RDS (MySQL), Glue, S3, EC2, CloudWatch |
+| **Libraries** | `requests`, `pymysql`, `boto3` |
+| **Data Format** | JSON → CSV → Parquet |
+| **Transformations** | SQL + PySpark |
+| **Visualization** | AWS Console & MySQL Workbench |
+| **Version Control** | Git & GitHub |
 
-AWS Glue
+---
 
-Reads data from MySQL
+## 📂 Project Structure
 
-Applies transformations using:
-
-SQL (data cleaning & categorization)
-
-PySpark (business logic)
-
-Writes transformed data back to MySQL or to S3
-
-Amazon S3
-
-Stores transformed data (Parquet format)
-
-Ready for analytics and reporting
-
-🛠️ Technologies Used
-Programming & Query Languages
-
-Python
-
-SQL
-
-PySpark
-
-AWS Services
-
-AWS Lambda
-
-Amazon RDS (MySQL)
-
-AWS Glue
-
-Amazon S3
-
-Amazon CloudWatch
-
-Amazon EC2 (for testing & connectivity)
-
-Libraries
-
-requests
-
-pymysql
-
-boto3
-
-📂 Project Structure
 AWS_ETL_PIPELINE_SQL/
 │
-├── src/
-│   ├── lambda_function.py
-│   ├── glue_weather_pyspark.py
-│   └── glue_weather_transform.sql
+├── Glue/
+│ └── aws_glue_visual_etl.png
 │
 ├── outputs/
-│   ├── mysql_weather_transformed_output.png
-│   ├── s3_parquet_weather_output.png
-│   └── glue_job_success.png
+│ ├── Mysql_weather_data_transform.png
+│ ├── S3_parquet.png
+│ └── transformed_weather_data.csv
 │
-├── .gitignore
+├── src/
+│ ├── lambda_function.py
+│ ├── glue_weather_pyspark.py
+│ └── glue_weather_transform.sql
+│
 └── README.md
+---
 
-🔄 ETL Workflow Explained
-🔹 Extract
+## 🔄 ETL Process Explanation
 
-AWS Lambda pulls weather data for multiple US cities
+### 🔹 Extract (Lambda)
+- AWS Lambda fetches weather data for multiple US cities
+- Extracted fields include temperature, humidity, wind speed, and timestamp
+- Lambda is triggered every hour using CloudWatch
 
-Data includes temperature, humidity, wind speed, and timestamp
+### 🔹 Transform (AWS Glue)
+- SQL transformations:
+  - Cast columns to correct data types
+  - Categorize temperature (`Hot`, `Warm`, `Cool`, `Cold`)
+  - Categorize humidity (`Humid`, `Normal`, `Dry`)
+  - Filter out invalid records
+- PySpark transformations:
+  - Apply business rules
+  - Enrich data using Spark DataFrames
 
-Data is fetched every hour automatically
+### 🔹 Load (MySQL & S3)
+- Transformed data written to:
+  - MySQL table: `usa_weather_transformed`
+  - Amazon S3 as Parquet files
+- CSV output also generated for reference
 
-🔹 Transform
+---
 
-AWS Glue applies transformations:
+## 📊 Outputs & Results
 
-Casts columns to correct data types
+The `outputs/` folder contains proof of successful execution:
+- **MySQL transformed data screenshot**
+- **S3 Parquet file output**
+- **CSV transformed dataset**
 
-Categorizes temperature (Hot, Warm, Cool, Cold)
+These outputs confirm that the ETL pipeline executed successfully end to end.
 
-Categorizes humidity (Humid, Normal, Dry)
+---
 
-Filters out invalid or null records
+## ⏱️ Automation & Monitoring
+- Lambda scheduled using **Amazon CloudWatch**
+- Glue jobs run automatically
+- Logs monitored through **CloudWatch Logs**
+- No manual intervention required
 
-🔹 Load
+---
 
-Transformed data is stored in:
+## 📚 What I Learned
+- Building serverless ingestion pipelines using AWS Lambda
+- Writing SQL and PySpark transformations in AWS Glue
+- Integrating relational databases with big data tools
+- Designing scalable ETL workflows on AWS
+- Managing IAM roles and secure cloud access
+- Structuring production-ready data engineering projects
 
-MySQL (usa_weather_transformed)
+---
 
-Amazon S3 as Parquet files (optional)
+## 🚀 Future Enhancements
+- Query data using Amazon Athena
+- Build dashboards using Amazon QuickSight
+- Add alerting and error notifications
+- Expand dataset to include global cities
 
-📊 Sample Output
-MySQL (Transformed Data)
+---
 
-Cleaned weather records
+## ✅ Final Outcome
+✔ Fully automated AWS ETL pipeline  
+✔ Real-time weather data ingestion  
+✔ Clean, enriched analytics-ready data  
+✔ Strong portfolio project for data engineering roles  
 
-Categorized temperature & humidity
+---
 
-Ready for analytics queries
-
-S3 (Parquet Output)
-
-Column-optimized format
-
-Efficient for tools like Athena or BI platforms
-
-(See screenshots in the outputs/ folder)
-
-⏱️ Automation
-
-Lambda scheduled using CloudWatch
-
-Glue jobs run automatically
-
-Logs monitored through CloudWatch Logs
-
-No manual intervention required
-
-📚 What I Learned
-
-Designing cloud-based ETL pipelines
-
-Using AWS Lambda for serverless ingestion
-
-Working with AWS Glue (SQL + PySpark)
-
-Integrating relational databases with big data tools
-
-Writing production-style data transformations
-
-Managing AWS resources securely
-
-🚀 Future Improvements
-
-Query data using Amazon Athena
-
-Build dashboards with Amazon QuickSight
-
-Add error handling & alerting
-
-Expand to global weather datasets
-
-✅ Final Outcome
-
-✔ Fully automated AWS ETL pipeline
-✔ Real-time API data ingestion
-✔ Clean, categorized analytics data
-✔ Strong hands-on data engineering project
-
-💡 This project demonstrates practical data engineering skills using AWS services, automation, and scalable data processing.
+💡 *This project demonstrates hands-on data engineering skills using AWS services, automation, and scalable data processing.*
